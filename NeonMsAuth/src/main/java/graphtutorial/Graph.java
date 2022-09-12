@@ -74,4 +74,32 @@ public class Graph {
 	    return token.getToken();
 	}
 	
+	public static User getUser() throws Exception {
+	    // Ensure client isn't null
+	    if (_userClient == null) {
+	        throw new Exception("Graph has not been initialized for user auth");
+	    }
+
+	    return _userClient.me()
+	        .buildRequest()
+	        .select("displayName,mail,userPrincipalName")
+	        .get();
+	}
+	
+	public static MessageCollectionPage getInbox() throws Exception {
+	    // Ensure client isn't null
+	    if (_userClient == null) {
+	        throw new Exception("Graph has not been initialized for user auth");
+	    }
+
+	    return _userClient.me()
+	        .mailFolders("inbox")
+	        .messages()
+	        .buildRequest()
+	        .select("from,isRead,receivedDateTime,subject")
+	        .top(100)
+	        .orderBy("receivedDateTime DESC")
+	        .get();
+	}
+	
 }

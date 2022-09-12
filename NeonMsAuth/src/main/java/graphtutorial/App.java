@@ -1,9 +1,16 @@
 package graphtutorial;
 
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.InputMismatchException;
 import java.util.Properties;
 import java.util.Scanner;
+
+import com.microsoft.graph.models.Message;
+import com.microsoft.graph.models.User;
+import com.microsoft.graph.requests.MessageCollectionPage;
 
 public class App {
 
@@ -22,6 +29,7 @@ public class App {
 	    initializeGraph(oAuthProperties);
 
 	    greetUser();
+	    
 
 	    Scanner input = new Scanner(System.in);
 
@@ -90,7 +98,17 @@ public class App {
 	}
 
 	private static void greetUser() {
-	    // TODO
+	    try {
+	        final User user = Graph.getUser();
+	        // For Work/school accounts, email is in mail property
+	        // Personal accounts, email is in userPrincipalName
+	        final String email = user.mail == null ? user.userPrincipalName : user.mail;
+	        System.out.println("Hello, " + user.displayName + "!");
+	        System.out.println("Email: " + email);
+	    } catch (Exception e) {
+	        System.out.println("Error getting user");
+	        System.out.println(e.getMessage());
+	    }
 	}
 
 	private static void displayAccessToken() {
@@ -104,7 +122,27 @@ public class App {
 	}
 
 	private static void listInbox() {
-	    // TODO
+	    try {
+	        final MessageCollectionPage messages = Graph.getInbox();
+
+	        // Output each message's details
+	        for (Message message: messages.getCurrentPage()) {
+	            System.out.println("Message: " + message.subject);
+	            System.out.println("  From: " + message.from.emailAddress.name);
+	            System.out.println("  Status: " + (message.isRead ? "Read" : "Unread"));
+	            System.out.println("  Received: " + message.receivedDateTime
+	                // Values are returned in UTC, convert to local time zone
+	                .atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
+	                .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)));
+	            
+	        }
+
+	        final Boolean moreMessagesAvailable = messages.getNextPage() != null;
+	        System.out.println("\nMore messages available? " + moreMessagesAvailable);
+	    } catch (Exception e) {
+	        System.out.println("Error getting inbox");
+	        System.out.println(e.getMessage());
+	    }
 	}
 
 	private static void sendMail() {
