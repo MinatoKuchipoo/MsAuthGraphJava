@@ -42,9 +42,9 @@ public class App3ClientCredFlow {
 	public String getAccessTokenByClientCredentialGrant()  {
         
 	    String accessToken = null;
-	    String clientId = "0506e1d5-040c-4abb-acda-089dfcd940b2";
-	    String secret = "co48Q~Ba5oF6_U816Xs3E85stxYlknd2_HdFOaRt";
-	    String authority = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
+	    String clientId = "b877e0ca-5c83-4656-9d48-fce896eabea5";
+	    String secret = "kdi8Q~j~-0pRbNhfiT9dPjZqazmjMj_V7ueyEdzz";
+	    String authority = "https://login.microsoftonline.com/fbf47054-0b5c-48f7-935f-ecd5b66f2229/oauth2/v2.0/token";
 	    String scope = "https://outlook.office365.com/.default";
 	    System.out.println("Client ID : "+clientId);
 	    System.out.println("Client Secret : "+secret);
